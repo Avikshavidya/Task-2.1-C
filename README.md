@@ -25,44 +25,66 @@
     <div id="app">
         <h1>Todo App</h1>
         <div>
-            <input v-model="newTodo" @keyup.enter="addTodo" placeholder="Add a new task">
-            <button @click="addTodo">Add</button>
+            <input id="newTodoInput" placeholder="Add a new task">
+            <button onclick="addTodo()">Add</button>
         </div>
-        <div>
-            <div v-for="(todo, index) in todos" :key="index" class="todo-item" :class="{ 'completed': todo.completed }">
-                {{ todo.text }}
-                <button @click="deleteTodo(index)">Delete</button>
-                <button @click="toggleComplete(index)">{{ todo.completed ? 'Mark Incomplete' : 'Mark Complete' }}</button>
-            </div>
-        </div>
+        <div id="todoList"></div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.11/dist/vue.esm-browser.js"></script>
     <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    newTodo: '',
-                    todos: []
-                };
-            },
-            methods: {
-                addTodo() {
-                    if (this.newTodo.trim() !== '') {
-                        this.todos.push({ text: this.newTodo, completed: false });
-                        this.newTodo = '';
-                    }
-                },
-                deleteTodo(index) {
-                    this.todos.splice(index, 1);
-                },
-                toggleComplete(index) {
-                    this.todos[index].completed = !this.todos[index].completed;
-                }
-            }
-        });
+        const todos = [];
 
-        app.mount('#app');
+        function renderTodos() {
+            const todoList = document.getElementById("todoList");
+            todoList.innerHTML = "";
+
+            todos.forEach((todo, index) => {
+                const todoItem = document.createElement("div");
+                todoItem.classList.add("todo-item");
+                if (todo.completed) {
+                    todoItem.classList.add("completed");
+                }
+
+                const textElement = document.createElement("span");
+                textElement.textContent = todo.text;
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.onclick = () => deleteTodo(index);
+
+                const toggleButton = document.createElement("button");
+                toggleButton.textContent = todo.completed ? "Mark Incomplete" : "Mark Complete";
+                toggleButton.onclick = () => toggleComplete(index);
+
+                todoItem.appendChild(textElement);
+                todoItem.appendChild(deleteButton);
+                todoItem.appendChild(toggleButton);
+
+                todoList.appendChild(todoItem);
+            });
+        }
+
+        function addTodo() {
+            const newTodoInput = document.getElementById("newTodoInput");
+            const newTodoText = newTodoInput.value.trim();
+            if (newTodoText !== '') {
+                todos.push({ text: newTodoText, completed: false });
+                newTodoInput.value = '';
+                renderTodos();
+            }
+        }
+
+        function deleteTodo(index) {
+            todos.splice(index, 1);
+            renderTodos();
+        }
+
+        function toggleComplete(index) {
+            todos[index].completed = !todos[index].completed;
+            renderTodos();
+        }
+
+        renderTodos();
     </script>
 </body>
 </html>

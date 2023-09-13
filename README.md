@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App</title>
     <style>
-        /* Add your CSS styles here */
-        /* Example styles */
         .todo-item {
             display: flex;
             justify-content: space-between;
